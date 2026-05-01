@@ -13,6 +13,11 @@ Pipeline (DAG: `advanced_data_pipeline`) terdiri dari empat tahapan utama:
 3. **Validate**: Memeriksa kualitas data (mendeteksi *null values* dan duplikasi baris).
 4. **Load**: Memuat data yang telah bersih ke dalam sistem *database* PostgreSQL.
 
+## Advanced SQL & Data Analytics
+Proyek ini juga mencakup implementasi query analitik tingkat lanjut dan optimasi database yang dapat dilihat pada direktori `sql/`:
+- **Window Functions & CTEs**: Perhitungan *running total*, pemeringkatan produk (`DENSE_RANK`), dan deteksi anomali harga.
+- **Performance Tuning**: Implementasi *B-Tree Composite Indexes* untuk mengoptimalkan *query* berbasis waktu dan *grouping*, serta *query* untuk memonitor ukuran indeks dalam PostgreSQL.
+
 ## Struktur Direktori
 
 ```text
