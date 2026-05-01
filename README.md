@@ -1,22 +1,25 @@
 # Advanced Data Quality Pipeline with Apache Airflow & Docker
 
-Sebuah proyek *Data Engineering* end-to-end yang dirancang untuk mengekstrak data e-commerce dari REST API, melakukan transformasi dan normalisasi data menggunakan Pandas, memvalidasi kualitas data, dan memuatnya ke dalam PostgreSQL menggunakan Apache Airflow. Seluruh environment diorkestrasi menggunakan Docker.
+Sebuah proyek _Data Engineering_ end-to-end yang dirancang untuk mengekstrak data e-commerce dari REST API, melakukan transformasi dan normalisasi data menggunakan Pandas, memvalidasi kualitas data, dan memuatnya ke dalam PostgreSQL menggunakan Apache Airflow. Seluruh environment diorkestrasi menggunakan Docker.
 
 ## Arsitektur Pipeline
 
 Pipeline (DAG: `advanced_data_pipeline`) terdiri dari empat tahapan utama:
+
 1. **Extract**: Menarik data transaksi e-commerce secara dinamis dari [Fake Store API](https://fakestoreapi.com/).
-2. **Transform**: 
-   - Normalisasi struktur JSON yang bersarang (*nested data exploding*).
-   - Penyesuaian format zona waktu (*timestamp timezone formatting*).
+2. **Transform**:
+   - Normalisasi struktur JSON yang bersarang (_nested data exploding_).
+   - Penyesuaian format zona waktu (_timestamp timezone formatting_).
    - Penambahan metrik kalkulasi (`total_price`).
-3. **Validate**: Memeriksa kualitas data (mendeteksi *null values* dan duplikasi baris).
-4. **Load**: Memuat data yang telah bersih ke dalam sistem *database* PostgreSQL.
+3. **Validate**: Memeriksa kualitas data (mendeteksi _null values_ dan duplikasi baris).
+4. **Load**: Memuat data yang telah bersih ke dalam sistem _database_ PostgreSQL.
 
 ## Advanced SQL & Data Analytics
+
 Proyek ini juga mencakup implementasi query analitik tingkat lanjut dan optimasi database yang dapat dilihat pada direktori `sql/`:
-- **Window Functions & CTEs**: Perhitungan *running total*, pemeringkatan produk (`DENSE_RANK`), dan deteksi anomali harga.
-- **Performance Tuning**: Implementasi *B-Tree Composite Indexes* untuk mengoptimalkan *query* berbasis waktu dan *grouping*, serta *query* untuk memonitor ukuran indeks dalam PostgreSQL.
+
+- **Window Functions & CTEs**: Perhitungan _running total_, pemeringkatan produk (`DENSE_RANK`), dan deteksi anomali harga.
+- **Performance Tuning**: Implementasi _B-Tree Composite Indexes_ untuk mengoptimalkan _query_ berbasis waktu dan _grouping_, serta _query_ untuk memonitor ukuran indeks dalam PostgreSQL.
 
 ## Struktur Direktori
 
@@ -30,6 +33,9 @@ data-pipeline-advanced/
 │   ├── validate.py
 │   ├── load.py
 │   └── utils.py
+├── sql/
+│   ├── advanced_analytics.sql
+│   └── performance_tuning.sql
 ├── data/              # Folder lokal
 ├── logs/              # Log Airflow
 ├── docker-compose.yml
@@ -45,18 +51,21 @@ data-pipeline-advanced/
 ## Cara Menjalankan Proyek
 
 1. **Clone Repositori**
+
    ```bash
    git clone <url-repositori-anda>
    cd data-quality-pipeline
    ```
 
 2. **Inisialisasi Lingkungan Airflow & Database**
+
    ```bash
    # Inisialisasi database
    docker-compose up airflow-init
    ```
 
 3. **Jalankan Layanan**
+
    ```bash
    docker-compose up -d
    docker-compose run --rm airflow airflow users create     --username admin     --firstname Admin     --lastname User     --role Admin     --email admin@example.com     --password admin
