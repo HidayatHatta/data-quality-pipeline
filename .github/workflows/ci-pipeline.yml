@@ -22,7 +22,8 @@ jobs:
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirements.txt
+        # Menambahkan constraint file resmi Apache Airflow
+        pip install -r requirements.txt --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-2.7.0/constraints-3.8.txt"
         pip install flake8
 
     - name: Lint with Flake8 (Cek Kerapian & Syntax Error)
