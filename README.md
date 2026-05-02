@@ -1,37 +1,55 @@
-# Advanced Data Quality Pipeline with Apache Airflow & Docker
+# End-to-End Data Engineering: Quality Pipeline & Star Schema DWH
 
-Sebuah proyek _Data Engineering_ end-to-end yang dirancang untuk mengekstrak data e-commerce dari REST API, melakukan transformasi dan normalisasi data menggunakan Pandas, memvalidasi kualitas data, dan memuatnya ke dalam PostgreSQL menggunakan Apache Airflow. Seluruh environment diorkestrasi menggunakan Docker.
+Sebuah proyek *Data Engineering* komprehensif yang dirancang untuk mengekstrak data e-commerce dari REST API, melakukan transformasi data (Pandas), memvalidasi kualitas data, dan membangun arsitektur *Data Warehouse* berbasis *Star Schema* di PostgreSQL menggunakan Apache Airflow. Seluruh infrastruktur diorkestrasi menggunakan Docker dan tervalidasi melalui CI/CD pipeline.
 
 ## Arsitektur Pipeline
 
-Pipeline (DAG: `advanced_data_pipeline`) terdiri dari empat tahapan utama:
+Proyek ini memiliki dua DAG (*Directed Acyclic Graph*) utama yang merepresentasikan alur kerja standar industri:
 
-1. **Extract**: Menarik data transaksi e-commerce secara dinamis dari [Fake Store API](https://fakestoreapi.com/).
-2. **Transform**:
-   - Normalisasi struktur JSON yang bersarang (_nested data exploding_).
-   - Penyesuaian format zona waktu (_timestamp timezone formatting_).
-   - Penambahan metrik kalkulasi (`total_price`).
-3. **Validate**: Memeriksa kualitas data (mendeteksi _null values_ dan duplikasi baris).
-4. **Load**: Memuat data yang telah bersih ke dalam sistem _database_ PostgreSQL.
+### 1. Data Quality Pipeline (`advanced_data_pipeline`)
+Fokus pada ekstraksi linier dan pembersihan data:
+- **Extract**: Menarik data transaksi e-commerce secara dinamis dari [Fake Store API](https://fakestoreapi.com/).
+- **Transform**: Normalisasi struktur JSON yang bersarang (*nested data exploding*), penyesuaian zona waktu, dan kalkulasi metrik.
+- **Validate**: Memeriksa kualitas data secara otomatis (mendeteksi *null values* dan duplikasi baris).
+- **Load**: Memuat data yang telah bersih ke dalam *database* PostgreSQL.
+
+### 2. Star Schema Data Warehouse (`star_schema_dwh_pipeline`)
+Fokus pada *Dimensional Modeling* untuk kebutuhan analitik:
+- Mengekstrak multientitas (*Users, Products, Carts*) secara terisolasi.
+- Memecah data transaksional menjadi tabel dimensi (`dim_users`, `dim_products`, `dim_date`) dan tabel fakta (`fact_sales`).
+- Memuat tabel ke PostgreSQL dengan mengedepankan integritas relasional (*Foreign Keys*).
+
+## Business Intelligence & Visualisasi
+
+Tabel *Star Schema* yang telah diproses dihubungkan secara langsung ke **Power BI Desktop** (Mode *Import/DirectQuery*) untuk menghasilkan analitik bisnis yang interaktif.
+
+### Model Relasi (Star Schema)
+![Model View](https://raw.githubusercontent.com/HidayatHatta/assets-ml-terapan/main/Model%20View.png)
+
+### Dashboard Analitik
+![Report View](https://raw.githubusercontent.com/HidayatHatta/assets-ml-terapan/main/Report%20View.png)
 
 ## Advanced SQL & Data Analytics
 
-Proyek ini juga mencakup implementasi query analitik tingkat lanjut dan optimasi database yang dapat dilihat pada direktori `sql/`:
-
-- **Window Functions & CTEs**: Perhitungan _running total_, pemeringkatan produk (`DENSE_RANK`), dan deteksi anomali harga.
-- **Performance Tuning**: Implementasi _B-Tree Composite Indexes_ untuk mengoptimalkan _query_ berbasis waktu dan _grouping_, serta _query_ untuk memonitor ukuran indeks dalam PostgreSQL.
+Proyek ini juga mendemonstrasikan kemampuan *query* analitik tingkat lanjut dan optimasi *database* (dapat dilihat pada direktori `sql/`):
+- **Window Functions & CTEs**: Perhitungan *running total*, pemeringkatan produk (`DENSE_RANK`), dan deteksi anomali harga.
+- **Performance Tuning**: Implementasi *B-Tree Composite Indexes* untuk mengoptimalkan *query* berbasis filter waktu dan *grouping*.
 
 ## Struktur Direktori
 
 ```text
 data-pipeline-advanced/
+├── .github/
+│   └── workflows/
+│       └── airflow-ci.yml     # CI/CD Pipeline
 ├── dags/
-│   └── pipeline_dag.py
+│   └── pipeline_dag.py        # DAG 1: Data Quality
+│   └── dwh_dag.py             # DAG 2: Star Schema
 ├── scripts/
-│   ├── extract.py
-│   ├── transform.py
+│   ├── extract.py / extract_dwh.py
+│   ├── transform.py / transform_dwh.py
 │   ├── validate.py
-│   ├── load.py
+│   ├── load.py / load_dwh.py
 │   └── utils.py
 ├── sql/
 │   ├── advanced_analytics.sql
